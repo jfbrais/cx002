@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.naming.AuthenticationException;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -22,9 +21,15 @@ import javax.naming.ldap.LdapContext;
  */
 public class ADAuth 
 {
+	private String result;
 	private String domain;
 	private String ldapHost;
 	private String searchBase;
+	
+	// Login errors
+	private String ldap_773 = "Password expired.",
+				   ldap_52e = "Wrong credentials.",
+				   ldap_533 = "Account disabled.";
 
 	public ADAuth()
 	{
@@ -39,8 +44,8 @@ public class ADAuth
 		this.ldapHost = host;
 		this.searchBase = dn;
 	}
-
-	public Map authenticate(String user, String pass) throws NamingException
+	
+	public Map authenticate(String user, String pass)
 	{
 		String returnedAtts[] = { "sn", "givenName", "mail" };
 		String searchFilter = "(&(objectClass=user)(sAMAccountName=" + user	+ "))";
@@ -98,23 +103,33 @@ public class ADAuth
 		         tempString = tokenizerTemp.nextToken();
 		         if (tempString.equalsIgnoreCase("AcceptSecurityContext")) 
 		         {
-		                 while (tokenizerTemp.hasMoreElements()) 
-		                 {
-	                          tempString = tokenizerTemp.nextToken();
-	                          if (tempString.startsWith("773"))
-	                        	  System.out.println("Password expired.");
-	                        	  //setIsPasswordExpired(true);
-	                          if (tempString.startsWith("52e"))
-	                        	  System.out.println("Wrong credentials.");
-	                        	  //setIsPasswordWrong(true);
-	                          if (tempString.startsWith("533"))
-	                        	  System.out.println("Account disabled.");			                                   
-	                        	  //setIsAccountDisabled(true);
-		                 }
+	                 while (tokenizerTemp.hasMoreElements()) 
+	                 {
+	                	 result = "Wrong credentials";
+	                	 
+                          tempString = tokenizerTemp.nextToken();
+                          if (tempString.startsWith("773"))
+                          {
+                        	  result = ldap_773;
+                          }
+                          if (tempString.startsWith("52e")) 
+                          {
+                        	  result = ldap_52e;
+                          }
+                          if (tempString.startsWith("533")) 
+                          {
+                        	  result = ldap_533;
+                          }
+	                 }
 		         }
 			}
 		}
 		
 		return null;
 	  }
+	
+	public String getResult()
+	{
+		return result;
+	}
 }
