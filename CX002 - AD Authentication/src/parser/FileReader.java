@@ -27,11 +27,6 @@ public class FileReader
 	private String[] data;
 	private String line;
 	public int i = 1;
-
-    public FileReader()
-    {
-    	System.out.println("FileReader - Constructor");
-    }
     
 	public String[][] parseLog(String cFile)
 	{
@@ -69,12 +64,8 @@ public class FileReader
 	    		for (int j = 1; j < data.length; j++)
 	    		{
 	    			listData[i][j] = data[j - 1];
-	    			
-	    			System.out.print(data[j - 1] + "\t");
-//	    			System.out.print(listData[i][j] + "\t");
 	    		}
-	    		
-	    		System.out.println("");
+
 	    		i++;
 	    	}	
 	    	

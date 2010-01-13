@@ -1,6 +1,9 @@
 package auth;
 
 import javax.swing.*;
+
+import parser.LogParser;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
@@ -95,6 +98,10 @@ public class AuthPrompt extends JPanel implements ActionListener
 			{
 				JOptionPane.showMessageDialog(controllingFrame,
 				  "Login succeeded.");
+				
+				controllingFrame.setVisible(false);
+				
+				LogParser log = new LogParser();
 			}
 
 			// Zero out the possible password, for security.
@@ -132,7 +139,7 @@ public class AuthPrompt extends JPanel implements ActionListener
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		JFrame frame = new JFrame("Log Parser");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		System.out.println(frame.getWidth());
 		
 		// Create and set up the content pane.
@@ -147,11 +154,17 @@ public class AuthPrompt extends JPanel implements ActionListener
 				newContentPane.resetFocus();
 			}
 		});
+		
+		frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+               e.getWindow().dispose();
+	        }
+        });
 
 		// Display the window.
 		frame.pack();
 		frame.setLocation((int)((screenSize.getWidth() / 2) - frame.getWidth() / 2), 
-				  (int)((screenSize.getHeight() / 2) - frame.getHeight() / 2));
+				  		  (int)((screenSize.getHeight() / 2) - frame.getHeight() / 2));
 
 		frame.setVisible(true);
 	}
